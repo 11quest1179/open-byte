@@ -1,3 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Personal AI</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background: #f4f4f9; }
+        #chat-box { width: 400px; height: 300px; border: 1px solid #ccc; background: white; padding: 10px; overflow-y: auto; margin-bottom: 10px; border-radius: 8px; }
+        input { width: 320px; padding: 10px; border-radius: 5px; border: 1px solid #ddd; }
+        button { padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>AI Assistant</h2>
+    <div id="chat-box"></div>
+    <div>
+        <input type="text" id="user-input" placeholder="Ask me anything...">
+        <button onclick="askAI()">Send</button>
+    </div>
+
+    <script>
+        async function askAI() {
+            const input = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const userText = input.value;
+            
+            chatBox.innerHTML += `<p><b>You:</b> ${userText}</p>`;
+            input.value = ""; // Clear input
+
+            // Call the AI
+            const response = await puter.ai.chat(userText, { model: 'gemini-3-flash' });
+            chatBox.innerHTML += `<p><b>AI:</b> ${response}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
 <script src="https://js.puter.com/v2/"></script>
 <script>
   puter.chat("Hello! How can you help me today?", { model: 'gemini-3-flash' })
