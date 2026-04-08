@@ -3,64 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal AI</title>
-    <script src="https://js.puter.com/v2/"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background: #f0f2f5; color: #333; }
-        h2 { color: #007bff; }
-        #chat-box { width: 100%; max-width: 500px; height: 400px; border: none; background: white; padding: 20px; overflow-y: auto; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .input-area { display: flex; gap: 10px; width: 100%; max-width: 500px; }
-        input { flex-grow: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
-        button { padding: 12px 20px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #0056b3; }
-        .msg { margin: 10px 0; line-height: 1.5; }
-        .user-msg { color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .ai-msg { color: #000; background: #e7f3ff; padding: 10px; border-radius: 8px; }
-    </style>
-</head>
-<body>
-    <h2>Personal AI Assistant</h2>
-    <div id="chat-box">
-        <p class="msg ai-msg">Hello! I'm ready to help. (If this is your first time, you may need to click 'Send' twice to allow the Puter popup).</p>
-    </div>
-    <div class="input-area">
-        <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="if(event.key==='Enter') askAI()">
-        <button onclick="askAI()">Send</button>
-    </div>
-
-    <script>
-        async function askAI() {
-            const input = document.getElementById('user-input');
-            const chatBox = document.getElementById('chat-box');
-            const userText = input.value.trim();
-            
-            if (!userText) return;
-
-            // Display user message
-            chatBox.innerHTML += `<div class="msg user-msg"><b>You:</b> ${userText}</div>`;
-            input.value = ""; 
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            try {
-                // In 2026 Puter.js, 'gpt-4o-mini' is the most stable free model.
-                // You can also try 'gemini-3-flash' if your Puter credits allow it.
-                const response = await puter.ai.chat(userText, { model: 'gpt-4o-mini' });
-                
-                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${response}</div>`;
-            } catch (error) {
-                chatBox.innerHTML += `<div class="msg" style="color:red;"><b>Error:</b> Check if popups are blocked! (${error.message})</div>`;
-            }
-            
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Developer Assistant</title>
     
     <script src="https://js.puter.com/v2/"></script>
@@ -69,19 +11,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        /* Modern Dark Theme */
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #0f0f0f; color: #ececec; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; min-height: 100vh; }
         
+        h2 { color: #007bff; margin-top: 20px; }
+
+        /* The Chat Container */
         #chat-box { 
-            width: 100%; max-width: 800px; height: 600px; 
-            background: #1e1e1e; padding: 20px; overflow-y: auto; 
-            border-radius: 12px; border: 1px solid #333;
-            display: flex; flex-direction: column; gap: 20px;
+            width: 100%; max-width: 900px; height: 70vh; 
+            background: #181818; padding: 20px; overflow-y: auto; 
+            border-radius: 12px; border: 1px solid #2a2a2a;
+            display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
         /* Message Bubbles */
-        .bubble { max-width: 90%; padding: 15px; border-radius: 10px; line-height: 1.6; }
-        .user-msg { align-self: flex-end; background: #007bff; color: white; }
-        .ai-msg { align-self: flex-start; background: #2d2d2d; border: 1px solid #444; width: 95%; }
+        .bubble { max-width: 85%; padding: 12px 18px; border-radius: 15px; line-height: 1.6; font-size: 15px; word-wrap: break-word; }
+        .user-msg { align-self: flex-end; background: #007bff; color: white; border-bottom-right-radius: 2px; }
+        .ai-msg { align-self: flex-start; background: #262626; border: 1px solid #333; color: #e0e0e0; border-bottom-left-radius: 2px; width: auto; }
 
         /* Code Block Styling */
         pre { 
@@ -91,30 +38,40 @@
             overflow-x: auto; 
             position: relative; 
             border: 1px solid #444;
+            margin: 10px 0;
         }
-        code { font-family: 'Fira Code', monospace !important; font-size: 14px; }
+        code { font-family: 'Fira Code', monospace !important; font-size: 13px; }
 
-        /* Copy Button */
+        /* Copy Button inside Code Blocks */
         .copy-btn {
-            position: absolute; right: 10px; top: 10px;
-            background: #444; color: #fff; border: none;
-            padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+            position: absolute; right: 8px; top: 8px;
+            background: #333; color: #fff; border: 1px solid #555;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;
+            transition: 0.2s;
         }
-        .copy-btn:hover { background: #666; }
+        .copy-btn:hover { background: #555; }
 
         /* Input Area */
-        .input-area { width: 100%; max-width: 800px; display: flex; margin-top: 20px; gap: 10px; }
-        input { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #2d2d2d; color: white; outline: none; }
-        button { background: #007bff; color: white; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .input-area { width: 100%; max-width: 900px; display: flex; margin-top: 20px; gap: 10px; padding-bottom: 20px; }
+        input { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #262626; color: white; outline: none; font-size: 16px; }
+        input:focus { border-color: #007bff; }
+        button { background: #007bff; color: white; border: none; padding: 0 30px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #0056b3; }
+
+        /* Scrollbar Styling */
+        #chat-box::-webkit-scrollbar { width: 6px; }
+        #chat-box::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <h2>AI Code Assistant</h2>
-    <div id="chat-box"></div>
+    <h2>AI Personal Assistant</h2>
+    <div id="chat-box">
+        <div class="bubble ai-msg">Hello! I can write code, answer questions, and more. Try asking me to "Write a Python script for a calculator."</div>
+    </div>
 
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Ask for code (e.g., Write a python script)..." onkeypress="if(event.key==='Enter') askAI()">
+        <input type="text" id="user-input" placeholder="Message your AI..." onkeypress="if(event.key==='Enter') askAI()">
         <button onclick="askAI()">Send</button>
     </div>
 
@@ -125,45 +82,50 @@
             const userText = input.value.trim();
             if (!userText) return;
 
-            // Add User Message
+            // 1. Add User Message
             chatBox.innerHTML += `<div class="bubble user-msg">${userText}</div>`;
             input.value = "";
 
-            // Add AI Loading State
+            // 2. Create AI Placeholder
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'bubble ai-msg';
-            aiMsgDiv.innerHTML = "Thinking...";
+            aiMsgDiv.innerHTML = "<i>Thinking...</i>";
             chatBox.appendChild(aiMsgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
+                // 3. Get AI Response (using gpt-4o-mini via Puter)
                 const response = await puter.ai.chat(userText, { model: 'gpt-4o-mini' });
                 
-                // Parse Markdown and convert to HTML
+                // 4. Convert Markdown to HTML
                 const htmlResponse = marked.parse(response);
                 aiMsgDiv.innerHTML = htmlResponse;
 
-                // Add Copy Buttons to all <pre> tags
+                // 5. Setup Copy Buttons for each code block
                 aiMsgDiv.querySelectorAll('pre').forEach((block) => {
+                    // Create button
                     const button = document.createElement('button');
                     button.innerText = 'Copy';
                     button.className = 'copy-btn';
                     block.appendChild(button);
 
+                    // Add click event
                     button.addEventListener('click', () => {
-                        const code = block.querySelector('code').innerText;
-                        navigator.clipboard.writeText(code);
+                        const codeText = block.querySelector('code').innerText;
+                        navigator.clipboard.writeText(codeText);
                         button.innerText = 'Copied!';
                         setTimeout(() => button.innerText = 'Copy', 2000);
                     });
                 });
 
-                // Trigger Syntax Highlighting
-                Prism.highlightAll();
+                // 6. Apply Syntax Highlighting
+                Prism.highlightAllUnder(aiMsgDiv);
 
             } catch (error) {
-                aiMsgDiv.innerHTML = "Error: " + error.message;
+                aiMsgDiv.innerHTML = `<span style="color: #ff6b6b;">Error: ${error.message}</span>`;
             }
+            
+            // Auto-scroll to bottom
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
