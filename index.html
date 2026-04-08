@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal AI Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Assistant</title>
     
     <script src="https://js.puter.com/v2/"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -11,116 +11,156 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
     <style>
-        /* Modern Dark Theme with Pure White Text */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            background: #0a0a0a; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #000000; 
             color: #ffffff; 
+            margin: 0; 
             display: flex; 
             flex-direction: column; 
-            align-items: center; 
-            padding: 20px; 
-            margin: 0; 
-            min-height: 100vh; 
+            height: 100vh; /* Full viewport height */
+            height: -webkit-fill-available;
+            overflow: hidden; /* Prevent body scroll */
         }
-        
-        h2 { color: #ffffff; margin: 20px 0; font-weight: 300; }
+
+        h2 { 
+            font-size: 1.2rem; 
+            text-align: center; 
+            padding: 15px 0; 
+            margin: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+        }
 
         #chat-box { 
+            flex: 1; 
             width: 100%; 
             max-width: 800px; 
-            height: 70vh; 
-            background: #141414; 
-            padding: 20px; 
+            margin: 0 auto;
+            padding: 20px 15px; 
             overflow-y: auto; 
-            border-radius: 12px; 
-            border: 1px solid #333;
             display: flex; 
             flex-direction: column; 
             gap: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            scrollbar-width: none; /* Hide scrollbar Firefox */
         }
+        #chat-box::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
 
         /* Message Bubbles */
         .bubble { 
-            max-width: 85%; 
-            padding: 12px 18px; 
-            border-radius: 15px; 
-            line-height: 1.6; 
-            font-size: 15px; 
+            max-width: 88%; 
+            padding: 12px 16px; 
+            border-radius: 20px; 
+            line-height: 1.5; 
+            font-size: 16px; /* Prevents iOS auto-zoom on focus */
             word-wrap: break-word; 
-            color: #ffffff; 
         }
         
         .user-msg { 
             align-self: flex-end; 
             background: #007bff; 
-            border-bottom-right-radius: 2px; 
+            color: #ffffff;
+            border-bottom-right-radius: 4px; 
         }
         
         .ai-msg { 
             align-self: flex-start; 
-            background: #262626; 
-            border: 1px solid #444; 
-            border-bottom-left-radius: 2px; 
+            background: #1c1c1e; 
+            border: 1px solid #2c2c2e; 
+            border-bottom-left-radius: 4px; 
         }
 
-        /* Code Block Styling */
+        /* Responsive Code Blocks */
         pre { 
             background: #000 !important; 
-            padding: 15px; 
-            border-radius: 8px; 
+            padding: 12px; 
+            border-radius: 12px; 
             overflow-x: auto; 
             position: relative; 
-            border: 1px solid #444;
+            border: 1px solid #333;
             margin: 10px 0;
+            font-size: 13px;
         }
-        code { 
-            font-family: 'Fira Code', monospace !important; 
-            font-size: 13px; 
-            color: #ffffff !important; 
-        }
-
-        /* Copy Button */
-        .copy-btn {
-            position: absolute; right: 10px; top: 10px;
-            background: #444; color: #fff; border: none;
-            padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+        
+        .copy-btn { 
+            position: absolute; right: 5px; top: 5px; 
+            background: #333; color: #fff; border: none; 
+            padding: 5px 10px; border-radius: 6px; font-size: 10px; 
         }
 
-        /* Input Area */
-        .input-area { width: 100%; max-width: 800px; display: flex; margin-top: 20px; gap: 10px; padding-bottom: 20px; }
+        /* Mobile Input Area */
+        .input-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            background: #000;
+            border-top: 1px solid #222;
+        }
+
+        .input-area { 
+            display: flex; 
+            gap: 8px; 
+        }
+
         input { 
             flex: 1; 
-            padding: 15px; 
-            border-radius: 8px; 
+            padding: 14px 18px; 
+            border-radius: 25px; 
             border: 1px solid #333; 
-            background: #1e1e1e; 
+            background: #1c1c1e; 
             color: #ffffff; 
             outline: none; 
+            font-size: 16px; /* Essential for mobile */
         }
+        
         button { 
             background: #007bff; 
             color: white; 
             border: none; 
-            padding: 0 25px; 
-            border-radius: 8px; 
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; 
             cursor: pointer; 
-            font-weight: bold; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* SVG Arrow for the Button */
+        button svg { width: 20px; height: 20px; fill: white; }
+
+        @media (max-width: 600px) {
+            .bubble { max-width: 92%; font-size: 15px; }
+            #chat-box { padding: 15px 10px; }
         }
     </style>
 </head>
 <body>
 
-    <h2>AI Personal Assistant</h2>
+    <h2>AI Assistant</h2>
+    
     <div id="chat-box"></div>
 
-    <div class="input-area">
-        <input type="text" id="user-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') askAI()">
-        <button onclick="askAI()">Send</button>
+    <div class="input-container">
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Message..." autocomplete="off">
+            <button onclick="askAI()">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
     </div>
 
     <script>
+        // Keyboard support for Enter
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') askAI();
+        });
+
         async function askAI() {
             const input = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
@@ -128,54 +168,37 @@
             
             if (!userText) return;
 
-            // 1. Add User Message
             chatBox.innerHTML += `<div class="bubble user-msg">${userText}</div>`;
             input.value = ""; 
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // 2. Create AI Bubble with Typing/Thinking indicator
-            const typingId = "msg-" + Date.now();
             const aiMsgDiv = document.createElement('div');
-            aiMsgDiv.id = typingId;
             aiMsgDiv.className = 'bubble ai-msg';
             aiMsgDiv.innerHTML = "<i>Thinking...</i>";
             chatBox.appendChild(aiMsgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // 3. Get response from Puter
                 const response = await puter.ai.chat(userText, { model: 'gpt-4o-mini' });
                 
-                // 4. THE FIX: Safely extract the text string
                 let aiString = "";
-                if (typeof response === 'string') {
-                    aiString = response;
-                } else if (response && typeof response === 'object') {
-                    // Pull text from common Puter object paths
-                    aiString = response.text || 
-                               (response.message && response.message.content) || 
-                               JSON.stringify(response);
-                }
+                if (typeof response === 'string') aiString = response;
+                else aiString = response.text || (response.message && response.message.content) || JSON.stringify(response);
 
-                // 5. Convert Markdown to HTML and inject
-                aiMsgDiv.innerHTML = `<b>AI:</b><br>${marked.parse(String(aiString))}`;
+                aiMsgDiv.innerHTML = marked.parse(String(aiString));
 
-                // 6. Add Copy Buttons to code blocks
                 aiMsgDiv.querySelectorAll('pre').forEach((block) => {
                     const btn = document.createElement('button');
                     btn.innerText = 'Copy';
                     btn.className = 'copy-btn';
                     block.appendChild(btn);
-
                     btn.onclick = () => {
-                        const code = block.querySelector('code').innerText;
-                        navigator.clipboard.writeText(code);
-                        btn.innerText = 'Copied!';
+                        navigator.clipboard.writeText(block.querySelector('code').innerText);
+                        btn.innerText = '✓';
                         setTimeout(() => btn.innerText = 'Copy', 2000);
                     };
                 });
 
-                // 7. Highlight the code
                 Prism.highlightAllUnder(aiMsgDiv);
 
             } catch (error) {
