@@ -1,1 +1,8 @@
-
+<script src="https://js.puter.com/v2/"></script>
+<script>
+  puter.chat("Hello! How can you help me today?", { model: 'gemini-3-flash' })
+    .then(response => {
+       console.log(response);
+       alert(response);
+    });
+</script>
