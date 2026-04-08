@@ -56,3 +56,116 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Developer Assistant</title>
+    
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #121212; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        #chat-box { 
+            width: 100%; max-width: 800px; height: 600px; 
+            background: #1e1e1e; padding: 20px; overflow-y: auto; 
+            border-radius: 12px; border: 1px solid #333;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        /* Message Bubbles */
+        .bubble { max-width: 90%; padding: 15px; border-radius: 10px; line-height: 1.6; }
+        .user-msg { align-self: flex-end; background: #007bff; color: white; }
+        .ai-msg { align-self: flex-start; background: #2d2d2d; border: 1px solid #444; width: 95%; }
+
+        /* Code Block Styling */
+        pre { 
+            background: #000 !important; 
+            padding: 15px; 
+            border-radius: 8px; 
+            overflow-x: auto; 
+            position: relative; 
+            border: 1px solid #444;
+        }
+        code { font-family: 'Fira Code', monospace !important; font-size: 14px; }
+
+        /* Copy Button */
+        .copy-btn {
+            position: absolute; right: 10px; top: 10px;
+            background: #444; color: #fff; border: none;
+            padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+        }
+        .copy-btn:hover { background: #666; }
+
+        /* Input Area */
+        .input-area { width: 100%; max-width: 800px; display: flex; margin-top: 20px; gap: 10px; }
+        input { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #2d2d2d; color: white; outline: none; }
+        button { background: #007bff; color: white; border: none; padding: 0 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>AI Code Assistant</h2>
+    <div id="chat-box"></div>
+
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Ask for code (e.g., Write a python script)..." onkeypress="if(event.key==='Enter') askAI()">
+        <button onclick="askAI()">Send</button>
+    </div>
+
+    <script>
+        async function askAI() {
+            const input = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            // Add User Message
+            chatBox.innerHTML += `<div class="bubble user-msg">${userText}</div>`;
+            input.value = "";
+
+            // Add AI Loading State
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'bubble ai-msg';
+            aiMsgDiv.innerHTML = "Thinking...";
+            chatBox.appendChild(aiMsgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await puter.ai.chat(userText, { model: 'gpt-4o-mini' });
+                
+                // Parse Markdown and convert to HTML
+                const htmlResponse = marked.parse(response);
+                aiMsgDiv.innerHTML = htmlResponse;
+
+                // Add Copy Buttons to all <pre> tags
+                aiMsgDiv.querySelectorAll('pre').forEach((block) => {
+                    const button = document.createElement('button');
+                    button.innerText = 'Copy';
+                    button.className = 'copy-btn';
+                    block.appendChild(button);
+
+                    button.addEventListener('click', () => {
+                        const code = block.querySelector('code').innerText;
+                        navigator.clipboard.writeText(code);
+                        button.innerText = 'Copied!';
+                        setTimeout(() => button.innerText = 'Copy', 2000);
+                    });
+                });
+
+                // Trigger Syntax Highlighting
+                Prism.highlightAll();
+
+            } catch (error) {
+                aiMsgDiv.innerHTML = "Error: " + error.message;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
