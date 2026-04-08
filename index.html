@@ -9,69 +9,147 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
 
     <style>
-        /* Modern Dark Theme */
-        body { font-family: 'Inter', -apple-system, sans-serif; background: #0f0f0f; color: #ececec; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; min-height: 100vh; }
+        /* 2. Style - Pure White Text & Dark UI */
+        body { 
+            font-family: 'Inter', -apple-system, system-ui, sans-serif; 
+            background: #0a0a0a; 
+            color: #ffffff; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
         
-        h2 { color: #007bff; margin-top: 20px; }
+        h2 { color: #ffffff; margin: 20px 0; font-weight: 300; letter-spacing: 1px; }
 
-        /* The Chat Container */
         #chat-box { 
-            width: 100%; max-width: 900px; height: 70vh; 
-            background: #181818; padding: 20px; overflow-y: auto; 
-            border-radius: 12px; border: 1px solid #2a2a2a;
-            display: flex; flex-direction: column; gap: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            width: 100%; 
+            max-width: 900px; 
+            height: 75vh; 
+            background: #141414; 
+            padding: 25px; 
+            overflow-y: auto; 
+            border-radius: 16px; 
+            border: 1px solid #222;
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            scrollbar-width: thin;
+            scrollbar-color: #333 #141414;
         }
 
-        /* Message Bubbles */
-        .bubble { max-width: 85%; padding: 12px 18px; border-radius: 15px; line-height: 1.6; font-size: 15px; word-wrap: break-word; }
-        .user-msg { align-self: flex-end; background: #007bff; color: white; border-bottom-right-radius: 2px; }
-        .ai-msg { align-self: flex-start; background: #262626; border: 1px solid #333; color: #e0e0e0; border-bottom-left-radius: 2px; width: auto; }
+        /* Bubbles */
+        .bubble { 
+            max-width: 85%; 
+            padding: 14px 20px; 
+            border-radius: 18px; 
+            line-height: 1.6; 
+            font-size: 15px; 
+            word-wrap: break-word; 
+            color: #ffffff; /* Forces all bubble text to white */
+        }
+        
+        .user-msg { 
+            align-self: flex-end; 
+            background: #007bff; 
+            border-bottom-right-radius: 4px; 
+        }
+        
+        .ai-msg { 
+            align-self: flex-start; 
+            background: #1e1e1e; 
+            border: 1px solid #333; 
+            border-bottom-left-radius: 4px; 
+        }
 
-        /* Code Block Styling */
+        /* Code Block Layout */
         pre { 
-            background: #000 !important; 
-            padding: 15px; 
-            border-radius: 8px; 
+            background: #000000 !important; 
+            padding: 18px; 
+            border-radius: 10px; 
             overflow-x: auto; 
             position: relative; 
-            border: 1px solid #444;
-            margin: 10px 0;
+            border: 1px solid #333;
+            margin: 15px 0;
         }
-        code { font-family: 'Fira Code', monospace !important; font-size: 13px; }
+        
+        code { 
+            font-family: 'Fira Code', 'Cascadia Code', monospace !important; 
+            font-size: 14px; 
+            color: #ffffff !important; 
+        }
 
-        /* Copy Button inside Code Blocks */
+        /* Copy Button */
         .copy-btn {
-            position: absolute; right: 8px; top: 8px;
-            background: #333; color: #fff; border: 1px solid #555;
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;
-            transition: 0.2s;
+            position: absolute; 
+            right: 12px; 
+            top: 12px;
+            background: #2a2a2a; 
+            color: #ffffff; 
+            border: 1px solid #444;
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 12px;
+            transition: all 0.2s ease;
         }
-        .copy-btn:hover { background: #555; }
+        .copy-btn:hover { background: #444; border-color: #666; }
 
         /* Input Area */
-        .input-area { width: 100%; max-width: 900px; display: flex; margin-top: 20px; gap: 10px; padding-bottom: 20px; }
-        input { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #262626; color: white; outline: none; font-size: 16px; }
+        .input-area { 
+            width: 100%; 
+            max-width: 900px; 
+            display: flex; 
+            margin-top: 25px; 
+            gap: 12px; 
+            padding-bottom: 20px; 
+        }
+        
+        input { 
+            flex: 1; 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: 1px solid #333; 
+            background: #1e1e1e; 
+            color: #ffffff; 
+            outline: none; 
+            font-size: 16px; 
+            transition: border 0.2s;
+        }
+        
         input:focus { border-color: #007bff; }
-        button { background: #007bff; color: white; border: none; padding: 0 30px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover { background: #0056b3; }
-
-        /* Scrollbar Styling */
-        #chat-box::-webkit-scrollbar { width: 6px; }
-        #chat-box::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 0 35px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: 0.2s; 
+        }
+        
+        button:hover { background: #0056b3; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <h2>AI Personal Assistant</h2>
+    <h2>Personal AI</h2>
     <div id="chat-box">
-        <div class="bubble ai-msg">Hello! I can write code, answer questions, and more. Try asking me to "Write a Python script for a calculator."</div>
+        <div class="bubble ai-msg">Welcome. Ask me for code or general help. (Click Send twice if the Puter popup appears).</div>
     </div>
 
     <div class="input-area">
-        <input type="text" id="user-input" placeholder="Message your AI..." onkeypress="if(event.key==='Enter') askAI()">
+        <input type="text" id="user-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter') askAI()">
         <button onclick="askAI()">Send</button>
     </div>
 
@@ -86,7 +164,7 @@
             chatBox.innerHTML += `<div class="bubble user-msg">${userText}</div>`;
             input.value = "";
 
-            // 2. Create AI Placeholder
+            // 2. Add AI Placeholder
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'bubble ai-msg';
             aiMsgDiv.innerHTML = "<i>Thinking...</i>";
@@ -94,38 +172,35 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // 3. Get AI Response (using gpt-4o-mini via Puter)
+                // 3. Call Puter AI (using gpt-4o-mini for best free stability)
                 const response = await puter.ai.chat(userText, { model: 'gpt-4o-mini' });
                 
-                // 4. Convert Markdown to HTML
-                const htmlResponse = marked.parse(response);
-                aiMsgDiv.innerHTML = htmlResponse;
+                // 4. Render Markdown
+                aiMsgDiv.innerHTML = marked.parse(response);
 
-                // 5. Setup Copy Buttons for each code block
+                // 5. Add Copy Functionality to Code Blocks
                 aiMsgDiv.querySelectorAll('pre').forEach((block) => {
-                    // Create button
                     const button = document.createElement('button');
                     button.innerText = 'Copy';
                     button.className = 'copy-btn';
                     block.appendChild(button);
 
-                    // Add click event
                     button.addEventListener('click', () => {
-                        const codeText = block.querySelector('code').innerText;
-                        navigator.clipboard.writeText(codeText);
+                        const codeElement = block.querySelector('code');
+                        const textToCopy = codeElement ? codeElement.innerText : block.innerText;
+                        navigator.clipboard.writeText(textToCopy);
                         button.innerText = 'Copied!';
                         setTimeout(() => button.innerText = 'Copy', 2000);
                     });
                 });
 
-                // 6. Apply Syntax Highlighting
+                // 6. Highlight Code
                 Prism.highlightAllUnder(aiMsgDiv);
 
             } catch (error) {
-                aiMsgDiv.innerHTML = `<span style="color: #ff6b6b;">Error: ${error.message}</span>`;
+                aiMsgDiv.innerHTML = `<span style="color: #ff4444;">Error: ${error.message}</span>`;
             }
             
-            // Auto-scroll to bottom
             chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
